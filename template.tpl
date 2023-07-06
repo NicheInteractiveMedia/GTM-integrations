@@ -110,19 +110,34 @@ if (productRoute !== '' && path.search(productRoute) >= 0) {
   location = 'Checkout';
 }
 
-if (event === 'gtm.elementVisibility' && classes.search('sg-widget') >= 0) {
-  action = 'Widget Visibility';
+if (event === 'gtm.elementVisibility') {
+  if(classes.search('sg-widget') >= 0) {
+    action = 'Widget Visibility';
   
-  fields_to_set.sg_action = action;
-  fields_to_set.sg_location = location;
-  fields_to_set.url = url;
+    fields_to_set.sg_action = action;
+    fields_to_set.sg_location = location;
+    fields_to_set.url = url;
   
-  
-  gtag('get', measurementID, 'client_id', function(client_id) {
-    gtag('event', 'sg_widget_visibility', fields_to_set);
-  });
+    gtag('get', measurementID, 'client_id', function(client_id) {
+      gtag('event', 'sg_widget_visibility', fields_to_set);
+    });
 
-  data.gtmOnSuccess();  
+    data.gtmOnSuccess();
+    
+  } else if (classes.search('sg-addon-title') >= 0) {
+    action = 'Addon Visibility';
+  
+    fields_to_set.sg_action = action;
+    fields_to_set.sg_location = location;
+    fields_to_set.url = url;
+  
+  
+    gtag('get', measurementID, 'client_id', function(client_id) {
+      gtag('event', 'sg_addon_visibility', fields_to_set);
+    });
+
+    data.gtmOnSuccess();
+  }
 } else if (event === 'gtm.click') {
   
   fields_to_set.sg_location = location;
@@ -161,6 +176,15 @@ if (event === 'gtm.elementVisibility' && classes.search('sg-widget') >= 0) {
     
       gtag('get', measurementID, 'client_id', function(client_id) {
         gtag('event', 'sg_widget_engagement', fields_to_set);
+      });
+
+    data.gtmOnSuccess();
+  } else if (classes.search('sg-add-on-donation') >= 0) {
+      action = 'Addon amount selected';
+      fields_to_set.sg_action = action;
+    
+      gtag('get', measurementID, 'client_id', function(client_id) {
+        gtag('event', 'sg_addon_engagement', fields_to_set);
       });
 
     data.gtmOnSuccess();
